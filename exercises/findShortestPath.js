@@ -35,45 +35,24 @@ const graph4 = {
   6: []
 };
 
-const filterBySmallestLength = (array) => {
-  let smallestLength = null;
-  let filteredArray = [];
+const findShortestPath = (graph, currentVertex, vertexToFind, foundPaths = [], previousPath = []) => {
+  const siblingVertexes = graph[currentVertex];
 
-  for (let path of array) {
-    if (smallestLength === null || path.length < smallestLength) {
-      smallestLength = path.length;
-      filteredArray = [path];
-    } else if (path.length === smallestLength) {
-      filteredArray.push(path);
-    }
-  }
-
-  return filteredArray;
-};
-
-const findAllPaths = (graph, currentVertex, vertexToFind, foundPaths = [], previousPath = []) => {
-  const sublingVertexes = graph[currentVertex];
-
-  if (sublingVertexes.length === 0) {
+  if (siblingVertexes.length === 0) {
     return foundPaths;
   }
 
   const path = previousPath.concat(currentVertex);
 
-  if (sublingVertexes.indexOf(vertexToFind) !== -1) {
+  if (siblingVertexes.indexOf(vertexToFind) !== -1) {
     foundPaths.push(path.concat([vertexToFind]));
-  } else {
-    sublingVertexes.forEach((vertex) => {
-      findAllPaths(graph, vertex, vertexToFind, foundPaths, path);
+  } else if (foundPaths.length === 0 || foundPaths[0].length > path.length + 1) {
+    siblingVertexes.forEach((vertex) => {
+      findShortestPath(graph, vertex, vertexToFind, foundPaths, path);
     });
   }
 
   return foundPaths;
-};
-
-const findShortestPath = (graph, initialVertex, vertexToFind) => {
-  const allPaths = findAllPaths(graph, initialVertex, vertexToFind);
-  return filterBySmallestLength(allPaths);
 };
 
 console.log(findShortestPath(graph1, 1, 6)); // -> [[1, 2, 6]]
