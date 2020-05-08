@@ -18,22 +18,22 @@ const usersGraph = {
 };
 
 const findFirstPersonByJob = (graph, user, job) => {
-  let queue = graph[user].friends;
+  let queue = [...graph[user].friends];
   const checked = new Set();
 
   while(queue.length !== 0) {
-    const userName = queue[queue.length - 1];
+    const userName = queue[0];
     const currentUser = graph[userName];
 
     if (checked.has(userName)) {
-      queue.pop();
+      queue.shift();
       continue;
     }
 
     if (currentUser.job === job) {
       return userName;
     } else {
-      queue.pop();
+      queue.shift();
       checked.add(userName);
       queue = queue.concat(currentUser.friends);
     }
