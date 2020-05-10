@@ -15,6 +15,20 @@ const weightedGraph = {
   }
 };
 
+// with vertex with negative value
+const weightedGraphForDrums = {
+  book: {
+    plate: 5,
+    poster: 0
+  },
+  plate: {
+    poster: -7
+  },
+  poster: {
+    drums: 35
+  }
+};
+
 const collectPathInfo = (graph, parent, to, pathInfo = {}) => {
   const currentVertex = graph[parent];
 
@@ -54,3 +68,6 @@ const findShortestWeightedPath = (graph, from, to) => {
 
 console.log(findShortestWeightedPath(weightedGraph, 'Begin', 'End'));
 // -> { totalWeight: 6, path: ['Begin', 'B', 'A', 'End'] }
+
+console.log(findShortestWeightedPath(weightedGraphForDrums, 'book', 'drums'));
+// -> { totalWeight: 33, path: ['book', 'plate', 'poster', 'drums'] }
