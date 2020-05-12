@@ -29,21 +29,41 @@ const weightedGraphForDrums = {
   }
 };
 
-const collectPathInfo = (graph, parent, to, pathInfo = {}) => {
+// Directed Cyclic Graph
+const cyclicGraph = {
+  Begin: {
+    A: 10
+  },
+  A: {
+    B: 20
+  },
+  B: {
+    End: 30,
+    C: 1
+  },
+  C: {
+    B: 1
+  }
+};
+
+const collectPathInfo = (graph, parent, to, pathInfo = {}, checked = new Set()) => {
   const currentVertex = graph[parent];
 
   Object.entries(currentVertex).forEach(([vertex, weight]) => {
-    const parentWeight = pathInfo[parent] ? pathInfo[parent].weight : 0;
-    const weightWithParent = weight + parentWeight;
-    const isVertexDefined = typeof pathInfo[vertex] !== 'undefined';
-    const isCurrentWeightLess = isVertexDefined && pathInfo[vertex].weight > weightWithParent;
+    if (!checked.has(vertex)) {
+      const parentWeight = pathInfo[parent] ? pathInfo[parent].weight : 0;
+      const weightWithParent = weight + parentWeight;
+      const isVertexDefined = typeof pathInfo[vertex] !== 'undefined';
+      const isCurrentWeightLess = isVertexDefined && pathInfo[vertex].weight > weightWithParent;
 
-    if (!isVertexDefined || isCurrentWeightLess) {
-      pathInfo[vertex] = { parent, weight: weightWithParent };
-    }
+      if (!isVertexDefined || isCurrentWeightLess) {
+        pathInfo[vertex] = { parent, weight: weightWithParent };
+      }
 
-    if (vertex !== to) {
-      collectPathInfo(graph, vertex, to, pathInfo);
+      if (vertex !== to) {
+        checked.add(parent);
+        collectPathInfo(graph, vertex, to, pathInfo, checked);
+      }
     }
   });
 
@@ -71,3 +91,6 @@ console.log(findShortestWeightedPath(weightedGraph, 'Begin', 'End'));
 
 console.log(findShortestWeightedPath(weightedGraphForDrums, 'book', 'drums'));
 // -> { totalWeight: 33, path: ['book', 'plate', 'poster', 'drums'] }
+
+console.log(findShortestWeightedPath(cyclicGraph, 'Begin', 'End'));
+// -> { totalWeight: 60, path: ['Begin', 'A', 'B', 'End'] }
