@@ -1,4 +1,4 @@
-// find shortest weighted path via Dijkstra's algorithm
+// find shortest weighted path via Ford Bellman algorithm
 
 // Directed Acyclic Graph
 const weightedGraph = {
